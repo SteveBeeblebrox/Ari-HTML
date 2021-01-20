@@ -123,6 +123,17 @@ class AriVariableElement extends HTMLElement {
 
     //#endregion Overrides
     connectedCallback() {
+        if(!(this.src in window)) {
+            let that = this;
+            let value;
+            Object.defineProperty(globalThis, this.src, {
+                get: function() {return value},
+                set: function(val) {
+                    value = val;
+                    for(let element of document.querySelectorAll(`ari-var[src=${that.src}]`)) element.innerHTML = value ?? '';
+                }
+            });
+        }
         this.update();
     }
     attributeChangedCallback(name, oldVal, newVal) {
@@ -136,22 +147,6 @@ class AriVariableElement extends HTMLElement {
         this.innerHTML = globalThis[this.src] ?? '';
     }
     //#endregion Main
-}
-
-class Ari {
-    static define(name, value) {
-        function update() {
-            for(let element of document.querySelectorAll(`ari-var[src=${name}]`)) element.innerHTML = value ?? '';
-        }
-        Object.defineProperty(globalThis, name, {
-            get: function() {return value},
-            set: function(val) {
-                value = val;
-                update();
-            }
-        });
-        update();
-    }
 }
 
 window.customElements.define('ari-var', AriVariableElement);
