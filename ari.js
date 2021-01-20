@@ -88,7 +88,6 @@ class AriConditionalElement extends HTMLElement {
     update() {
         if(eval(this.case)) {
             this.setAttribute('active', '');
-            console.log(this.then.cssText)
             if(this.hasAttribute('then')) this.style = this.then.cssText;
         }
         else {
@@ -99,4 +98,60 @@ class AriConditionalElement extends HTMLElement {
     #internalUpdateOnResized = this.update.bind(this);
     //#endregion Main
 }
+
 window.customElements.define('ari-if', AriConditionalElement);
+
+class AriVariableElement extends HTMLElement {
+    
+    constructor() {
+        super();
+    }
+
+    //#region Attributes
+    static get observedAttributes() {
+        return ['src'];
+    }
+
+    get src() {
+        return this.getAttribute('src');
+    }
+    set src(val) {
+        val=val.toString();
+        this.setAttribute('src', val);
+    }
+    //#endregion Attributes
+
+    //#endregion Overrides
+    connectedCallback() {
+        this.update();
+    }
+    attributeChangedCallback(name, oldVal, newVal) {
+        if(oldVal !== newVal) this[name] = newVal;
+        this.update();
+    }
+    //#endregion Overrides
+
+    //#region Main
+    update() {
+        this.innerHTML = globalThis[this.src] ?? '';
+    }
+    //#endregion Main
+}
+
+class Ari {
+    static define(name, value) {
+        function update() {
+            for(let element of document.querySelectorAll(`ari-var[src=${name}]`)) element.innerHTML = value ?? '';
+        }
+        Object.defineProperty(globalThis, name, {
+            get: function() {return value},
+            set: function(val) {
+                value = val;
+                update();
+            }
+        });
+        update();
+    }
+}
+
+window.customElements.define('ari-var', AriVariableElement);
