@@ -6,7 +6,7 @@ class AriConditionalElement extends HTMLElement {
 
     //#region Attributes
     static get observedAttributes() {
-        return ['case', 'display', 'updateonresize'];
+        return ['case', 'updateonresize', 'then', 'else'];
     }
 
     get active() {
@@ -21,12 +21,38 @@ class AriConditionalElement extends HTMLElement {
         this.setAttribute('case', val);
     }
 
-    get display() {
-        return this.getAttribute('display');
+    #internalThenStyleObject = document.createElement('span').style;
+    get then() {
+        return this.#internalMakeStyleProxy(this, this.#internalThenStyleObject);
     }
-    set display(val) {
-        val=val.toString();
-        this.setAttribute('display', val);
+    set then(val) {
+        this.#internalThenStyleObject.cssText = val.toString();
+        this.setAttribute('then', this.#internalThenStyleObject.cssText);
+    }
+
+    #internalElseStyleObject = document.createElement('span').style;
+    get else() {
+        return this.#internalMakeStyleProxy(this, this.#internalElseStyleObject);
+    }
+
+    #internalMakeStyleProxy(that, style) {
+      return new Proxy(style, {
+            get: function(t, p, r) {
+                if(typeof p === 'string') return style[p];
+                else return t[p];
+            },
+            set: function(o, p, v) {
+                if(typeof p === 'string') style[p] = v;
+                else o[p] = v;
+                that.setAttribute('else', style.cssText)
+                return true;
+            }
+        });
+    }
+
+    set else(val) {
+        this.#internalElseStyleObject.cssText = val.toString();
+        this.setAttribute('else', this.#internalElseStyleObject.cssText);
     }
 
     get updateOnResize() {
@@ -53,7 +79,8 @@ class AriConditionalElement extends HTMLElement {
     }
     attributeChangedCallback(name, oldVal, newVal) {
         if(oldVal !== newVal) this[name] = newVal;
-        this.connectedCallback();
+        this.update();
+        if(this.hasAttribute('updateonresize')) window.addEventListener('resize', this.#internalUpdateOnResized);
     }
     //#endregion Overrides
 
@@ -61,11 +88,12 @@ class AriConditionalElement extends HTMLElement {
     update() {
         if(eval(this.case)) {
             this.setAttribute('active', '');
-            if(this.hasAttribute('display')) this.style.display = this.getAttribute('display');
+            console.log(this.then.cssText)
+            if(this.hasAttribute('then')) this.style = this.then.cssText;
         }
         else {
             this.removeAttribute('active');
-            if(this.hasAttribute('display')) this.style.display = 'none';
+            if(this.hasAttribute('else')) this.style = this.else.cssText;
         }
     }
     #internalUpdateOnResized = this.update.bind(this);
