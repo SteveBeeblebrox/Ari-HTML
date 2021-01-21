@@ -8,10 +8,25 @@ HTML conditionals, loops, and variables
 </ari-if>
 ```
 ## Variables
-### JavaScript Link
+### Single JavaScript Variable
 ```html
 <ari-var src="time"></ari-var>
 <script>
     setInterval(() => time = new Date().toLocaleTimeString(), 1000);
+</script>
+```
+
+### Multiple JavaScript Variables
+```html
+<ari-with src="message">
+  <h1>Title: <ari-var src="header"></ari-var></h1>
+  <p>Contents: <ari-var src="body"></ari-var></p>
+</ari-with>
+<script>
+  message = {
+      header: 'Hello',
+      body: 'Wow!'
+  }
+  message.header = 'Hello World';  
 </script>
 ```
