@@ -1,5 +1,21 @@
 # Ari-HTML
 HTML conditionals, loops, and variables
+## Tags
+### `ari-if`
+#### Attributes
++ This element includes the [global attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes).
++ `case` (String)
++ `then` (CSSStyleDeclaration)
++ `else` (CSSStyleDeclaration)
++ `updateonresize` (Boolean)
+### `ari-var`
+#### Attributes
++ This element includes the [global attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes).
++ `src` (String)
+### `ari-with`
+#### Attributes
++ This element includes the [global attributes](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes).
++ `src` (String)
 ## Conditional Statements
 ### If Statements
 ```html
