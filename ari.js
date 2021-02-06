@@ -98,3 +98,16 @@ class AriConditionalElement extends HTMLElement {
 }
 
 window.customElements.define('ari-if', AriConditionalElement);
+
+class AriScopeElement extends HTMLElement {
+    //#region Overrides
+    connectedCallback() {
+        window.requestAnimationFrame(() => {
+            this.attachShadow({ mode: 'open'});
+            while (this.hasChildNodes()) this.shadowRoot.appendChild(this.firstChild);
+            this.shadowRoot.querySelectorAll('style[type="ari/scoped"]').forEach(o => o.removeAttribute('type'));
+        });
+    }
+    //#endregion Overrides
+}
+window.customElements.define('ari-scope', AriScopeElement);
