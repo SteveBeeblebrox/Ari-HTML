@@ -29,7 +29,7 @@ HTML conditionals, loops, and variables
 ```html
 <h1>Hello World</h1>
   <ari-scope>
-    <style type="ari/scoped">
+    <style>
       h1 {
         color: red;
         text-decoration: underline;
