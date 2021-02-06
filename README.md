@@ -26,6 +26,7 @@ HTML support for conditional and scoped CSS
 #### Usage
 + This element provides a simple way to scope CSS styles to part of a document.
 + Any `style` tags inside of this element will not affect any part of the document outside of this element.
++ Note that use of `querySelector`, `querySelectorAll`, and `closest` are also scoped.
 #### Example
 ```html
 <h1>Hello World</h1>
